@@ -63,16 +63,20 @@ impl Commands {
             return;
         }
 
+        let mut found = false;
         for path in &self.path {
             let full_path = format!("{}/{}", path, command);
             if std::path::Path::new(&full_path).exists() {
                 println!("{} is {}", command, full_path);
+                found = true;
                 break;
             }
         }
 
+        if !found {
+            println!("{}: not found", command);
+        }
 
-        println!("{}: not found", command);
     }
     
 }
