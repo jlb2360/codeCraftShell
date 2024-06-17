@@ -1,6 +1,10 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 
+mod commands;
+
+use commands::exit_command;
+
 fn main() {
     // Uncomment this block to pass the first stage
     print!("$ ");
@@ -10,9 +14,10 @@ fn main() {
     let stdin = io::stdin();
     let mut input = String::new();
     while stdin.read_line(&mut input).unwrap() > 0 {
-        match input.trim() {
-            "exit" => return,
-            _ => println!("{}: command not found", input.trim()),
+        let ls = input.trim().split_whitespace().collect::<Vec<&str>>();
+        match ls[0] {
+            "exit" => exit_command(ls),
+            _ => println!("Command not found: {}", ls[0]),
         }
 
         print!("$ ");
