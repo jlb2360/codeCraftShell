@@ -38,6 +38,11 @@ impl Commands {
             function: |_| {
                 println!("{}", env::current_dir().unwrap().display());
             },
+        });
+
+        self.built_in.push(Command{
+            name: "cd",
+            function: cd_command,
         })
     }
 
@@ -124,4 +129,22 @@ fn exit_command(params: Vec<&str>) {
 
 fn echo_command(params: Vec<&str>) {
     println!("{}", params.join(" "));
+}
+
+fn cd_command(params: Vec<&str>){
+    if params.len() > 2 {
+        println!("cd: too many arguments");
+        return;
+    }
+
+    if params.len() <= 0 {
+        println!("cd: missing argument")
+    } else {
+        let path = params[0];
+        if std::path::Path::new(path).exists() {
+            env::set_current_dir(path).unwrap();
+        } else {
+            println!("cd: {}: No such file or directory", path);
+        }
+    }
 }
