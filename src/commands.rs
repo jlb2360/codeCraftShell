@@ -47,7 +47,24 @@ impl Commands {
             return;
         }
 
+        for path in &self.path {
+            let full_path = format!("{}/{}", path, name);
+            if std::path::Path::new(&full_path).exists() {
+                self.execute_external_command(&full_path, params);
+                return;
+            }
+        }
+
         println!("{}: command not found", name);
+    }
+
+    fn execute_external_command(&self, full_path: &str, params: Vec<&str>) {
+        let mut command = std::process::Command::new(full_path);
+        command.args(params);
+        let status = command.status().expect("failed to execute process");
+        if !status.success() {
+            println!("{}: command failed with status {}", full_path, status);
+        }
     }
 
     fn type_command(&self, params: Vec<&str>) {
