@@ -1,4 +1,4 @@
-
+use std::env;
 
 struct Command {
     name: &'static str,
@@ -7,12 +7,15 @@ struct Command {
 
 pub struct Commands {
     built_in: Vec<Command>,
+    path: Vec<String>,
 }
 
 impl Commands {
     pub fn new() -> Commands {
+        let path = env::var("PATH").unwrap();
         Commands {
             built_in: Vec::new(),
+            path: path.split(":").map(|s| s.to_string()).collect(),
         }
     }
 
@@ -59,6 +62,16 @@ impl Commands {
             println!("type is a shell builtin");
             return;
         }
+
+        for path in &self.path {
+            let full_path = format!("{}/{}", path, command);
+            if std::path::Path::new(&full_path).exists() {
+                println!("{} is {}", command, full_path);
+                break;
+            }
+        }
+
+
         println!("{}: not found", command);
     }
     
