@@ -17,7 +17,7 @@ fn main() {
         let ls = input.trim().split_whitespace().collect::<Vec<&str>>();
         match ls[0] {
             "exit" => exit_command(ls),
-            _ => println!("Command not found: {}", ls[0]),
+            _ => println!("{}: command not found", ls[0]),
         }
 
         print!("$ ");
