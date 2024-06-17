@@ -32,6 +32,13 @@ impl Commands {
             name: "echo",
             function: echo_command,
         });
+
+        self.built_in.push(Command {
+            name: "pwd",
+            function: |_| {
+                println!("{}", env::current_dir().unwrap().display());
+            },
+        })
     }
 
     pub fn execute_command(&self, name: &str, params: Vec<&str>) {
