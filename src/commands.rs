@@ -144,7 +144,14 @@ fn cd_command(params: Vec<&str>){
         if std::path::Path::new(path).exists() {
             env::set_current_dir(path).unwrap();
         } else {
-            println!("cd: {}: No such file or directory", path);
+            // try relative path
+            let current_dir = env::current_dir().unwrap();
+            let new_path = current_dir.join(path);
+            if std::path::Path::new(&new_path).exists() {
+                env::set_current_dir(new_path).unwrap();
+            } else {
+                println!("cd: {}: No such file or directory", path);
+            }
         }
     }
 }
