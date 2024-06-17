@@ -59,7 +59,7 @@ impl Commands {
             println!("type is a shell builtin");
             return;
         }
-        println!("{} is not a shell builtin", command);
+        println!("{}: not found", command);
     }
     
 }
