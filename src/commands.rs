@@ -131,7 +131,7 @@ fn echo_command(params: Vec<&str>) {
     println!("{}", params.join(" "));
 }
 
-fn cd_command(params: Vec<&str>){
+fn cd_command(params: Vec<&str>){    
     if params.len() > 2 {
         println!("cd: too many arguments");
         return;
@@ -144,6 +144,24 @@ fn cd_command(params: Vec<&str>){
         if std::path::Path::new(path).exists() {
             env::set_current_dir(path).unwrap();
         } else {
+            // check for ~
+            if path.starts_with("~"){
+                let home = match env::var("HOME"){
+                    Ok(val) => val,
+                    Err(_) => {
+                        println!("cd: HOME not set");
+                        return;
+                    }
+                };
+                let new_path = home + &path[1..];
+                if std::path::Path::new(&new_path).exists() {
+                    env::set_current_dir(new_path).unwrap();
+                } else {
+                    println!("cd: {}: No such file or directory", path);
+                }
+                return;
+            }
+
             // try relative path
             let current_dir = env::current_dir().unwrap();
             let new_path = current_dir.join(path);
